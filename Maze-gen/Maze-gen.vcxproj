@@ -111,11 +111,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Grid.h" />
-    <ClInclude Include="GridCell.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="GridCell.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
