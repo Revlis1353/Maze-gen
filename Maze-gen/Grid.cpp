@@ -3,7 +3,9 @@
 #include <iostream>
 #include "Grid.h"
 
-
+//Unvisited cells are in the vector 'unvisitedCell'
+//Vector 'cells' will form maze map.
+//I divided the two for convenience ' sake.
 Grid::Grid(int sizeX, int sizeY) : maxX(sizeX), maxY(sizeY) {
 	int i, j;
 	for (i = 0; i < sizeY; i++) {
@@ -16,26 +18,22 @@ Grid::Grid(int sizeX, int sizeY) : maxX(sizeX), maxY(sizeY) {
 	srand((int)time(0));
 }
 
-
+//remove cells in vector
 Grid::~Grid() {
-	//remove cells in vector
 	int i;
 	for (i = 0; i < cells.size(); i++) {
 		delete cells[i];
 	}
 }
 
+//Grid output for debug
 void Grid::printGrid() {
 	int i, j;
-	for (j = 0; j < maxY; j++) {
+	for (j = maxY-1; j >= 0; j--) {
 		std::cout << "l";
 		for (i = 0; i < maxX; i++) {
 			switch (cells[j*maxX + i]->checkWall()) {
 			case 0:
-				if (cells[j*maxX + i]->isVisited()) {
-					std::cout << "##";
-					break;
-				}
 				std::cout << "  ";
 				break;
 			case 1:
@@ -47,15 +45,13 @@ void Grid::printGrid() {
 			case 3:
 				std::cout << "¤¡";
 				break;
-			case 5:
-				std::cout << "!!";
-				break;
 			}
 		}
 		std::cout << "l" << std::endl;
 	}
 }
 
+//It is the main function for creating a maze.
 void Grid::genMaze() {
 	//Set start point
 	Cell * startCell = pickRandomUnvisitedCell();
@@ -101,6 +97,7 @@ void Grid::genMaze() {
 				break;
 			}
 		}
+
 		//Now endCell is located in maze
 		//I'll Track the way from startCell to endCell
 
@@ -112,9 +109,6 @@ void Grid::genMaze() {
 			startCell->changeToVisited();
 			unvisitedCell.erase(unvisitedCell.begin() + findIndexwithCell(startCell));
 			buildWall(dir, lastdir, startCell);
-
-			printGrid();
-			std::cout << "#########" << startCell->isStart() << "############" << std::endl;
 
 			switch (dir) {
 			case 0:
@@ -139,33 +133,39 @@ void Grid::buildWall(int dir, int lastdir, Cell * currentCell) {
 	int currentIndex = currentCell->getX() + currentCell->getY() * maxX;
 
 	if (currentCell->isStart()) {
-		if (dir != 0 && currentCell->getY() != (maxY - 1) && cells[currentIndex + maxX]->isVisited()) { //north side
+		//north side
+		if (dir != 0 && currentCell->getY() != (maxY - 1) && cells[currentIndex + maxX]->isVisited()) { 
 			currentCell->buildNorthWall();
 		}
-		if (dir != 1 && currentCell->getX() + 1 != maxX && cells[currentIndex + 1]->isVisited()) { //east side
+		//east side
+		if (dir != 1 && currentCell->getX() + 1 != maxX && cells[currentIndex + 1]->isVisited()) { 
 			currentCell->buildEastWall();
 		}
-		if (dir != 2 && currentCell->getY() != 0 && cells[currentIndex - maxX]->isVisited()) { //south side
+		//south side
+		if (dir != 2 && currentCell->getY() != 0 && cells[currentIndex - maxX]->isVisited()) { 
 			cells[currentIndex - maxX]->buildNorthWall();
 		}
-		if (dir != 3 && currentCell->getX() != 0 && cells[currentIndex - 1]->isVisited()) { //west side
+		//west side
+		if (dir != 3 && currentCell->getX() != 0 && cells[currentIndex - 1]->isVisited()) { 
 			cells[currentIndex - 1]->buildEastWall();
 		}
 		return;
 	}
-	//Bug!!!!
-	if (dir != 0 && lastdir != 2 && currentCell->getY() + 1 != maxY && cells[currentIndex + maxX]->isVisited()) { //north side
+
+	//north side
+	if (dir != 0 && lastdir != 2 && currentCell->getY() + 1 != maxY && cells[currentIndex + maxX]->isVisited()) { 
 		currentCell->buildNorthWall();
-		//cells[currentIndex - maxX]->buildNorthWall();
 	}
-	if (dir != 1 && lastdir != 3 && currentCell->getX() + 1 != maxX && cells[currentIndex + 1]->isVisited()) { //east side
+	//east side
+	if (dir != 1 && lastdir != 3 && currentCell->getX() + 1 != maxX && cells[currentIndex + 1]->isVisited()) { 
 		currentCell->buildEastWall();
 	}
-	if (dir != 2 && lastdir != 0 && currentCell->getY() != 0 && cells[currentIndex - maxX]->isVisited()) { //south side
+	//south side
+	if (dir != 2 && lastdir != 0 && currentCell->getY() != 0 && cells[currentIndex - maxX]->isVisited()) { 
 		cells[currentIndex - maxX]->buildNorthWall();
-		//currentCell->buildNorthWall();
 	}
-	if (dir != 3 && lastdir != 1 && currentCell->getX() != 0 && cells[currentIndex-1]->isVisited()) { //west side
+	//west side
+	if (dir != 3 && lastdir != 1 && currentCell->getX() != 0 && cells[currentIndex-1]->isVisited()) { 
 		cells[currentIndex - 1]->buildEastWall();
 	}
 }

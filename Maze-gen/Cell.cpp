@@ -1,7 +1,9 @@
 #include "Cell.h"
 
 
-
+//When you store a wall of four cardinal points of a cell,
+//the data overlap with the one next to it,
+//so only the wall of the east and north will be stored in one cell.
 Cell::Cell(int x, int y) : xCoord(x), yCoord(y) {
 	wall_east = false;
 	wall_north = false;
