@@ -13,7 +13,10 @@ private:
 public:
 	Grid(int sizeX, int sizeY);
 	void genMaze();
+	void buildWall(int dir, int lastdir, Cell * currentCell);
 	Cell * pickRandomUnvisitedCell();
+	int findIndexwithCell(Cell * data);
+	void printGrid();
 	~Grid();
 };
 
